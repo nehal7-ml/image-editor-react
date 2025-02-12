@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Camera } from "react-camera-pro";
 import type { CameraType, } from "react-camera-pro";
-import ImageEditor from "./ImageEditor";
+import CropDemo from "./Crop";
 
 function CameraCapture() {
   const camera = useRef<CameraType | null>(null);
@@ -15,7 +15,7 @@ function CameraCapture() {
     <div className="flex gap-5 flex-col items-center justify-center">
       <div className="relative w-96 h-96 overflow-hidden rounded-lg">
         {image ?
-          <ImageEditor image={image} onCrop={setCroppedImage} cropButton={cropButton} />
+          <CropDemo image={image} onCrop={setCroppedImage} cropButton={cropButton} />
           : <Camera
             ref={camera}
             errorMessages={{

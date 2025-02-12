@@ -13,3 +13,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.Crop-Controls {
+  margin-bottom: 10px;
+}
+.Crop-Controls > * {
+  margin-bottom: 3px;
+}

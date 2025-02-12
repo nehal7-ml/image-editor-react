@@ -149,9 +149,11 @@ function cropCanvasWithPolygon(
   const minY = Math.min(...ys);
   const maxX = Math.max(...xs);
   const maxY = Math.max(...ys);
-  const width = maxX - minX;
-  const height = maxY - minY;
-
+  const width = Math.sqrt(Math.pow(tl.x - tr.x, 2) + Math.pow(tl.y - tr.y, 2));
+  const height = Math.sqrt(Math.pow(tl.x - bl.x, 2) + Math.pow(tl.y - bl.y, 2));
+  //const width = tr.x - tl.x;
+  //const height = bl.y - tl.y;
+  //
   // Create an offscreen canvas that exactly covers the bounding box.
   const offscreenCanvas = document.createElement('canvas');
   offscreenCanvas.width = width;
@@ -163,17 +165,24 @@ function cropCanvasWithPolygon(
   // translate the polygon points relative to (minX, minY).
   ctx.save();
   ctx.beginPath();
+
   ctx.moveTo(tl.x - minX, tl.y - minY);
   ctx.lineTo(tr.x - minX, tr.y - minY);
   ctx.lineTo(br.x - minX, br.y - minY);
-  ctx.lineTo(bl.x - minX, bl.y - minY);
-  ctx.closePath();
+  ctx.lineTo(bl.x - minX, bl.y - minY);;
+  ctx.closePath()
   ctx.clip();
 
   // Draw the source canvas onto the offscreen canvas,
   // offsetting so that the bounding box region aligns at (0,0).
+  console.log(sourceCanvas.width, sourceCanvas.height, width, height);
   ctx.drawImage(sourceCanvas, minX, minY, width, height, 0, 0, width, height);
+
+
+
   ctx.restore();
+
+  document.getElementById('root')?.appendChild(offscreenCanvas)
 
   // Return the resulting cropped image as a data URL.
   return offscreenCanvas.toDataURL('image/png');
