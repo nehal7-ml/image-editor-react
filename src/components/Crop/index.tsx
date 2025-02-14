@@ -83,8 +83,10 @@ function CropDemo({ image, cropButton, onCrop }: CropDemoProps) {
 
 
   return (
-    <div>
-      <ReactCrop crop={crop}
+    <div className='w-full h-full flex justify-center items-center'>
+      <ReactCrop
+        className=''
+        crop={crop}
 
         onChange={c => setCrop(c)} minHeight={25} minWidth={25}
         onComplete={c => setCompletedCrop(c)}

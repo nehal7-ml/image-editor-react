@@ -18,6 +18,7 @@ function App() {
           <CropDemo image={image} onCrop={setCroppedImage} cropButton={cropButton} />
           :
           <Camera
+            onCapture={setImage}
             cameraRef={camera}
 
           ></Camera>}
@@ -33,12 +34,8 @@ function App() {
           </button>
           <button ref={cropButton} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Crop</button>
         </div> :
+          null
 
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
-              setImage(camera.current?.takePhoto('base64url') as string ?? null);
-            }}
-          >Capture</button>
         }
 
       </div>
@@ -55,5 +52,5 @@ function App() {
 
 }
 
-export default App 
+export default App
 
