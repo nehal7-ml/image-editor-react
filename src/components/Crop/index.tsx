@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useRef, useState } from 'react'
-import ReactCrop, { PixelCrop, type Crop } from 'react-image-crop'
+import ReactCrop, { centerCrop, makeAspectCrop, PixelCrop, type Crop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 import { canvasPreview } from './canvasPreview';
 interface CropDemoProps {
@@ -14,6 +14,34 @@ function CropDemo({ image, cropButton, onCrop }: CropDemoProps) {
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const imageRef = useRef<HTMLImageElement>(null)
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [aspect, setAspect] = useState<number>(1)
+
+  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+    if (aspect) {
+      const { width, height } = e.currentTarget
+      setCrop(centerAspectCrop(width, height, aspect))
+    }
+  }
+  function centerAspectCrop(
+    mediaWidth: number,
+    mediaHeight: number,
+    aspect: number,
+  ) {
+    return centerCrop(
+      makeAspectCrop(
+        {
+          unit: '%',
+          width: 50,
+        },
+        aspect,
+        mediaWidth,
+        mediaHeight,
+      ),
+      mediaWidth,
+      mediaHeight,
+    )
+  }
+
 
   async function handleCrop() {
     const image = imageRef.current
@@ -85,14 +113,13 @@ function CropDemo({ image, cropButton, onCrop }: CropDemoProps) {
   return (
     <div className='w-full h-full flex justify-center items-center'>
       <ReactCrop
-        className=''
         crop={crop}
-
         onChange={c => setCrop(c)} minHeight={25} minWidth={25}
         onComplete={c => setCompletedCrop(c)}
+
       >
 
-        <img ref={imageRef} src={image} />
+        <img ref={imageRef} src={image} onLoad={onImageLoad} />
       </ReactCrop>
 
     </div>

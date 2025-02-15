@@ -40,8 +40,8 @@ function App() {
 
       </div>
 
-      <div>
-        {croppedImage ? <img src={croppedImage} alt="cropped image" className="w-full h-full object-cover" /> : null}
+      <div className="w-96 h-96 m-3">
+        {croppedImage ? <img src={croppedImage} alt="cropped image" className="w-full h-full object-contain" /> : null}
 
       </div>
 
