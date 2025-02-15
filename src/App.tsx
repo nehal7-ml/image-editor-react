@@ -4,7 +4,7 @@ import CropDemo from "./components/Crop";
 import Camera from "./components/Camera";
 
 function App() {
-  const camera = useRef<CameraType | null>(null);
+  const camera = useRef<HTMLInputElement | null>(null);
   const cropButton = useRef<HTMLButtonElement>(null);
   const [image, setImage] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
@@ -12,14 +12,14 @@ function App() {
 
   return <>
 
-    <div className="flex gap-5 flex-col items-center justify-center">
+    <div className="flex gap-5 flex-col items-center justify-center my-5">
       <div className="relative w-96 h-96 overflow-hidden rounded-lg">
         {image ?
           <CropDemo image={image} onCrop={setCroppedImage} cropButton={cropButton} />
           :
           <Camera
             onCapture={setImage}
-            cameraRef={camera}
+            inputRef={camera}
 
           ></Camera>}
 
