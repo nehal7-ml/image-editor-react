@@ -13,7 +13,6 @@ const CropDemo3: React.FC<CropDemoProps> = ({ image, onCrop, cropButton }: CropD
     guides: true,
     highlight: true,
     toggleDragModeOnDblclick: true,
-    restore: false,
     background: false
   }
 
@@ -51,11 +50,23 @@ const CropDemo3: React.FC<CropDemoProps> = ({ image, onCrop, cropButton }: CropD
     return () => { cropperRef.current?.destroy() }
   })
   return (
-    <div className='relative w-96 h-96 flex justify-center items-center'>
-      <img style={{ transform: `rotate(${rotate}deg)` }} ref={imageRef} src={image} className='w-full h-full object-contain' />
-      <div className="flex flex-col justify-self-center justify-center items-center gap-2 m-5">
-        <button onClick={() => cropperRef.current?.rotate(-5)}><RotateCcwIcon /></button>
-        <button onClick={() => cropperRef.current?.rotate(5)}><RotateCwIcon /></button>
+    <div className='relative flex justify-center items-center'>
+      <div>
+        <img ref={imageRef} src={image} className='' />
+
+      </div>
+      <div className="flex flex-col justify-self-center justify-center items-center gap-2 m-1 bg-zinc-700/60">
+        <button className='text-white font-bold py-2 px-2 rounded-full'
+          onClick={() => cropperRef.current?.rotate(-5)}>
+          <RotateCcwIcon />
+
+        </button>
+        <button className="text-white font-bold py-2 px-2 rounded-full"
+          onClick={() => cropperRef.current?.rotate(5)}>
+          <RotateCwIcon />
+
+        </button>
+
 
       </div>
     </div>
