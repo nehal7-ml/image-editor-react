@@ -13,7 +13,7 @@ function App() {
   return <>
 
     <div className="flex gap-5 flex-col items-center justify-center my-5">
-      <div className="relative w-96 h-96 overflow-hidden rounded-lg">
+      <div className="relative  m-1 overflow-hidden rounded-lg">
         {image ?
           <CropDemo image={image} onCrop={setCroppedImage} cropButton={cropButton} />
           :
@@ -40,8 +40,8 @@ function App() {
 
       </div>
 
-      <div className="w-96 h-96 m-3">
-        {croppedImage ? <img src={croppedImage} alt="cropped image" className="w-full h-full object-contain" /> : null}
+      <div className="w-60 h-60 m-3">
+        {croppedImage ? <img src={croppedImage} alt="cropped image" className=" w-full h-full object-contain" /> : null}
 
       </div>
 

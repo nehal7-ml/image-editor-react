@@ -2,6 +2,7 @@ import { Aperture, ImagesIcon, LucideCamera } from "lucide-react";
 import { RefObject, useRef, useState } from "react";
 import { CameraType, Camera as ReactCameraPro } from "react-camera-pro";
 import useCaptureSupport from "../../hooks/captureSupport";
+//import useCameraProperties from "@hooks/cameraProperties";
 
 interface CameraProps {
   inputRef: RefObject<HTMLInputElement | null>;
@@ -12,6 +13,7 @@ function Camera({ inputRef, onCapture }: CameraProps) {
   const [mediaSource, setMediaSource] = useState<'undecided' | 'camera' | 'file' | 'directCamera'>('undecided'); // 'undecided', 'camera', 'file'
   const cameraRef = useRef<CameraType>(null);
   const captureSupport = useCaptureSupport();
+  //const { width, height, error, loading } = useCameraProperties();
 
   async function handleCaptureFromFile(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.files?.[0];
@@ -56,53 +58,64 @@ function Camera({ inputRef, onCapture }: CameraProps) {
     }
   }
 
-  //async function cropAndLoadImage(base64URL: string): Promise<string> {
-  //  return new Promise((resolve, reject) => {
-  //    const img = new Image();
-  //
-  //    img.onload = async () => {
-  //      const width = img.width;
-  //      const height = img.height;
-  //
-  //      const cropWidth = width / 2;
-  //      const cropHeight = height / 2;
-  //
-  //      const startX = width / 4;
-  //      const startY = height / 4;
-  //
-  //      const offscreenCanvas = new OffscreenCanvas(cropWidth, cropHeight);
-  //      const offscreenCtx = offscreenCanvas.getContext('2d');
-  //
-  //      offscreenCtx!.drawImage(
-  //        img,
-  //        startX,
-  //        startY,
-  //        cropWidth,
-  //        cropHeight,
-  //        0,
-  //        0,
-  //        cropWidth,
-  //        cropHeight
-  //      );
-  //
-  //      const croppedBlob = await offscreenCanvas.convertToBlob();
-  //      resolve(URL.createObjectURL(croppedBlob));
-  //    };
-  //
-  //    img.onerror = (error) => {
-  //      reject(error);
-  //    };
-  //
-  //    img.src = base64URL;
-  //  });
-  //}
+  async function cropAndLoadImage(base64URL: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
 
-  const handleTakePhoto = async () => {
-    if (cameraRef.current) {
+      img.onload = async () => {
+        const width = img.width;
+        const height = img.height;
+
+        const cropWidth = width / 2;
+        const cropHeight = height / 2;
+
+        const startX = width / 4;
+        const startY = height / 4;
+
+        const offscreenCanvas = new OffscreenCanvas(cropWidth, cropHeight);
+        const offscreenCtx = offscreenCanvas.getContext('2d');
+
+        offscreenCtx!.drawImage(
+          img,
+          startX,
+          startY,
+          cropWidth,
+          cropHeight,
+          0,
+          0,
+          cropWidth,
+          cropHeight
+        );
+
+        const croppedBlob = await offscreenCanvas.convertToBlob();
+        resolve(URL.createObjectURL(croppedBlob));
+      };
+
+      img.onerror = (error) => {
+        reject(error);
+      };
+
+      img.src = base64URL;
+    });
+
+
+  }
+
+  const handleTakePhoto = async (cropCenter: boolean = false) => {
+    if (!cameraRef.current) return;
+    if (!cropCenter) {
       const photo = cameraRef.current.takePhoto('base64url');
       //const croppedImageUrl = await cropAndLoadImage(photo);
       onCapture(photo as string);
     }
+
+    else {
+      const photo = cameraRef.current.takePhoto('base64url');
+      const croppedImageUrl = await cropAndLoadImage(photo as string);
+      onCapture(croppedImageUrl as string);
+    }
+
+
   };
 
   const chooseCamera = () => {
@@ -118,7 +131,7 @@ function Camera({ inputRef, onCapture }: CameraProps) {
     <div className="relative w-full h-full flex flex-col gap-2">
 
       {(
-        <div className="flex justify-around mb-4">
+        <div className="flex justify-around mb-4 gap-4">
           <button
             onClick={chooseCamera}
             className="px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-700 text-white font-bold"
@@ -137,7 +150,8 @@ function Camera({ inputRef, onCapture }: CameraProps) {
 
       <label className="relative h-max flex-grow">
         {mediaSource === 'camera' && !captureSupport ? (
-          <div className="w-full h-full">
+          <div className="relative w-96 h-96 aspect-square rounded-lg" >
+
             <ReactCameraPro errorMessages={{
               noCameraAccessible: "No camera accessible",
               permissionDenied: "Permission denied",
@@ -146,8 +160,12 @@ function Camera({ inputRef, onCapture }: CameraProps) {
 
 
             }} ref={cameraRef} aspectRatio="cover" facingMode="environment" />
+            <div className="absolute w-1/2 h-1/2 z-10  top-0 left-0 transform translate-y-1/2 translate-x-1/2 text-white font-bold py-2 px-4 border-1 border-red-400">
+
+            </div>
+
             <button
-              onClick={handleTakePhoto}
+              onClick={() => handleTakePhoto(true)}
               className="absolute z-10  bottom-4 left-1/2 transform -translate-x-1/2 text-white font-bold py-2 px-4 rounded-full"
             >
               <Aperture className="inline-block align-middle" size={20} />
@@ -158,9 +176,9 @@ function Camera({ inputRef, onCapture }: CameraProps) {
 
             <>
               <input ref={inputRef} onChange={handleCaptureFromFile} type="file" accept="image/*" capture="environment" hidden />
-              <div className="z-10 w-full h-full flex justify-center items-center border-1 border-dashed border-gray-500 rounded-md cursor-pointer">
+              <div className="z-10 w-96 h-96 flex justify-center items-center border-1 border-dashed border-gray-500 rounded-md cursor-pointer">
                 <div className="flex items-center justify-center gap-4">
-                  <span> Upload  Image</span>
+                  <span>Capture Image</span>
                   <ImagesIcon />
                 </div>
               </div>
@@ -172,7 +190,7 @@ function Camera({ inputRef, onCapture }: CameraProps) {
         {mediaSource === 'file' && (
           <>
             <input ref={inputRef} onChange={handleCaptureFromFile} type="file" accept="image/*" hidden />
-            <div className="z-10 w-full h-full flex justify-center items-center border-1 border-dashed border-gray-500 rounded-md cursor-pointer">
+            <div className="z-10 w-96 h-96 flex justify-center items-center border-1 border-dashed border-gray-500 rounded-md cursor-pointer">
               <div className="flex items-center justify-center gap-4">
                 <span> Upload from files</span>
                 <ImagesIcon />
