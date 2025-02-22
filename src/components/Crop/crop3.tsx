@@ -64,10 +64,10 @@ const CropDemo3: React.FC<CropDemoProps> = ({ image, onCrop, cropButton }: CropD
         <button className="text-white font-bold py-2 px-2 rounded-full"
           onClick={() => cropperRef.current?.rotate(5)}>
           <RotateCwIcon />
-
         </button>
-
-
+        <button >
+          <Plus />
+        </button>
       </div>
     </div>
   );

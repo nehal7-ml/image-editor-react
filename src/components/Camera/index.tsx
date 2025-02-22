@@ -15,6 +15,7 @@ function Camera({ inputRef, onCapture }: CameraProps) {
   const captureSupport = useCaptureSupport();
   //const { width, height, error, loading } = useCameraProperties();
 
+
   async function handleCaptureFromFile(event: React.ChangeEvent<HTMLInputElement>) {
     const value = event.target.files?.[0];
     if (!value) return;

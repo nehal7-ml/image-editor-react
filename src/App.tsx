@@ -20,7 +20,6 @@ function App() {
           <Camera
             onCapture={setImage}
             inputRef={camera}
-
           ></Camera>}
 
       </div>
